@@ -2,6 +2,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -12,13 +13,6 @@ import (
 
 func main() {
 	r := chi.NewRouter()
-
-	// r.Use(cors.Handler(cors.Options{
-	// 	AllowedOrigins:   []string{"http://localhost:8080"},
-	// 	AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
-	// 	AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
-	// 	AllowCredentials: true,
-	// }))
 
 	// Basic middlewares
 	r.Use(middleware.Logger)
@@ -33,11 +27,14 @@ func main() {
 	// OAuth routes
 	r.Get("/login/google", h.HandleGoogleLogin)
 	r.Get("/callback", h.HandleGoogleCallback)
+	r.Get("/logout", h.HandleLogout)
 
 	// Serve index.html
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "static/index.html")
 	})
+
+	fmt.Println("Server running on http://localhost:8080")
 
 	// Start server
 	http.ListenAndServe(":8080", r)

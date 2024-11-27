@@ -1,13 +1,47 @@
-<!-- static/index.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>Google OAuth Login</title>
+    <script>
+        // Simple function to check if user is logged in
+        // In a real app, this would be more sophisticated
+        function checkLoginStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const loginSuccess = window.localStorage.getItem('isLoggedIn');
+            const logoutSuccess = urlParams.get('logout') === 'success';
+
+            const loginButton = document.getElementById('loginButton');
+            const logoutButton = document.getElementById('logoutButton');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+
+            if (loginSuccess) {
+                loginButton.style.display = 'none';
+                logoutButton.style.display = 'block';
+                welcomeMessage.textContent = 'Welcome, ' + localStorage.getItem('userName');
+            } else {
+                loginButton.style.display = 'block';
+                logoutButton.style.display = 'none';
+                welcomeMessage.textContent = '';
+                
+                // Clear any stored login info on logout
+                if (logoutSuccess) {
+                    window.localStorage.removeItem('isLoggedIn');
+                    window.localStorage.removeItem('userName');
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-    <h1>Login with Google</h1>
+<body onload="checkLoginStatus()">
+    <h1>Google OAuth Login</h1>
+    <p id="welcomeMessage"></p>
+    
     <a href="/login/google">
-        <button>Login with Google</button>
+        <button id="loginButton" style="display:none;">Login with Google</button>
+    </a>
+    
+    <a href="/logout">
+        <button id="logoutButton" style="display:none;">Logout</button>
     </a>
 </body>
 </html>
